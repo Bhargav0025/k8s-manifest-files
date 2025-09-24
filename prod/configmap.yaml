@@ -1,9 +1,10 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: calculator-api-config
-  namespace: production
-data:
-  NODE_ENV: production
-  LOG_LEVEL: error
-  FEATURE_FLAG_BETA: "false"
+apiVersion: v1                          # 1️⃣ API version for ConfigMap (core v1)
+kind: ConfigMap                        # 2️⃣ Kind - ConfigMap resource
+metadata:                             # 3️⃣ Metadata - basic info about ConfigMap
+  name: calculator-api-config         # - Name of the ConfigMap
+  namespace: production               # - Namespace where ConfigMap is created
+
+data:                                # 4️⃣ Data section: key-value pairs of config
+  NODE_ENV: production               # - Environment variable NODE_ENV with value "production"
+  LOG_LEVEL: error                  # - Log level setting for application
+  FEATURE_FLAG_BETA: "false"        # - Feature flag for enabling/disabling beta features
