@@ -7,6 +7,11 @@ metadata:
     app: calculator-api
 spec:
   replicas: 4
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   selector:
     matchLabels:
       app: calculator-api
