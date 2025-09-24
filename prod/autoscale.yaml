@@ -1,19 +1,23 @@
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: calculator-api
-  namespace: production
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: calculator-api
-  minReplicas: 4
-  maxReplicas: 6
-  metrics:
-    - type: Resource
+apiVersion: autoscaling/v2               # 1️⃣ API version for HPA (v2 supports more metrics)
+kind: HorizontalPodAutoscaler            # 2️⃣ Kind - HPA resource
+metadata:                               # 3️⃣ Metadata - basic info about HPA
+  name: calculator-api                  # - Name of the HPA resource
+  namespace: production                 # - Namespace where HPA is created
+
+spec:                                  # 4️⃣ Spec - desired state and scaling rules
+  scaleTargetRef:                      # - Reference to the target to autoscale
+    apiVersion: apps/v1                # - API version of the target resource
+    kind: Deployment                   # - Kind of the target resource
+    name: calculator-api               # - Name of the target resource (Deployment)
+
+  minReplicas: 4                      # - Minimum number of replicas to scale down to
+  maxReplicas: 6                      # - Maximum number of replicas to scale up to
+
+  metrics:                           # - Metrics to use for scaling decisions
+    - type: Resource                 # - Type of metric (Resource = CPU, Memory, etc.)
       resource:
-        name: cpu
+        name: cpu                   # - Metric name (CPU utilization)
         target:
-          type: Utilization
-          averageUtilization: 65
+          type: Utilization         # - Metric target type (average utilization across pods)
+          averageUtilization: 65   # - Target CPU utilization percentage (65%)
+
