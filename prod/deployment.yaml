@@ -1,49 +1,57 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: calculator-api
-  namespace: production
-  labels:
+apiVersion: apps/v1                     # 1️⃣ API version - specifies Deployment API version
+kind: Deployment                        # 2️⃣ Kind - this resource is a Deployment
+metadata:                              # 3️⃣ Metadata - basic info about the Deployment
+  name: calculator-api                 # - Name of the Deployment
+  namespace: production                # - Kubernetes namespace to deploy to
+  labels:                            # - Labels to organize/filter resources
     app: calculator-api
-spec:
-  replicas: 4
-  strategy:
-    type: RollingUpdate
+
+spec:                                 # 4️⃣ Spec - desired state of Deployment
+  replicas: 4                         # - Number of pod replicas to run
+  strategy:                          # - Deployment update strategy configuration
+    type: RollingUpdate              # - Rolling update strategy for zero downtime
     rollingUpdate:
-      maxUnavailable: 0
-      maxSurge: 1
-  selector:
+      maxUnavailable: 0             # - Max pods that can be unavailable during update (0 = none)
+      maxSurge: 1                   # - Max extra pods during update (1 = one extra pod)
+
+  selector:                         # - How Deployment finds pods to manage
     matchLabels:
       app: calculator-api
-  template:
-    metadata:
+
+  template:                         # - Pod template to create pods
+    metadata:                      # - Metadata for pods
       labels:
         app: calculator-api
-    spec:
+
+    spec:                         # - Pod spec: containers and related settings
       containers:
-        - name: calculator-api
-          image: myacr.azurecr.io/calculator-api:build-101
+        - name: calculator-api     # - Container name
+          image: myacr.azurecr.io/calculator-api:build-101  # - Container image to use
           ports:
-            - containerPort: 3000
-          envFrom:
+            - containerPort: 3000  # - Port the container exposes
+
+          envFrom:                 # - Inject environment variables from ConfigMap
             - configMapRef:
                 name: calculator-api-config
-          readinessProbe:
+
+          readinessProbe:          # - Probe to check if container is ready for traffic
             httpGet:
               path: /health
               port: 3000
             initialDelaySeconds: 5
             periodSeconds: 10
-          livenessProbe:
+
+          livenessProbe:           # - Probe to check if container is alive; restarts if fails
             httpGet:
               path: /health
               port: 3000
             initialDelaySeconds: 10
             periodSeconds: 20
-          resources:
+
+          resources:               # - CPU and memory resource requests and limits
             requests:
-              memory: "512Mi"
-              cpu: "500m"
+              memory: "512Mi"     # - Minimum memory guaranteed
+              cpu: "500m"         # - Minimum CPU guaranteed (500 millicores = 0.5 CPU)
             limits:
-              memory: "1024Mi"
-              cpu: "1000m"
+              memory: "1024Mi"    # - Max memory allowed
+              cpu: "1000m"        # - Max CPU allowed (1000 millicores = 1 CPU)
