@@ -1,24 +1,26 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: calculator-api
-  namespace: production
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-spec:
-  rules:
-    - host: calculator.example.com
+apiVersion: networking.k8s.io/v1             # 1️⃣ API version for Ingress resource
+kind: Ingress                               # 2️⃣ Kind - Ingress resource
+metadata:                                  # 3️⃣ Metadata - basic info about Ingress
+  name: calculator-api                     # - Ingress resource name
+  namespace: production                    # - Namespace to deploy Ingress
+  annotations:                            # - Ingress-specific settings (e.g. for nginx ingress controller)
+    nginx.ingress.kubernetes.io/rewrite-target: /  # - Rewrite URL paths to root "/"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"  # - Enforce HTTPS redirect
+
+spec:                                     # 4️⃣ Spec - desired state of Ingress
+  rules:                                  # - HTTP routing rules
+    - host: calculator.example.com        # - Domain name this Ingress serves
       http:
         paths:
-          - path: /
-            pathType: Prefix
-            backend:
+          - path: /                       # - URL path prefix to match
+            pathType: Prefix              # - Matching strategy for path (Prefix = starts with)
+            backend:                      # - Backend Service to route traffic to
               service:
-                name: calculator-api
+                name: calculator-api     # - Service name to route to
                 port:
-                  number: 80
-  tls:
+                  number: 80             # - Port on Service to send traffic
+
+  tls:                                    # - TLS configuration for HTTPS
     - hosts:
-        - calculator.example.com
-      secretName: calculator-prod-tls
+        - calculator.example.com          # - Hosts for which TLS applies
+      secretName: calculator-prod-tls    # - Secret containing TLS certs (must be pre-created)
